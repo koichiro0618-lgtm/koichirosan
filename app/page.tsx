@@ -30,98 +30,98 @@ export default function Home() {
   }, []);
 
   if (!userId) {
-    return (
-      <div className="py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-black" style={{ color: "#ef4444" }}>CrossFit 池袋</h1>
-          <p style={{ color: "#9ca3af" }} className="mt-2">メンバーポータルサイト</p>
-        </div>
-        <UserSelect onSelect={login} />
-      </div>
-    );
+    return <UserSelect onSelect={login} />;
   }
+
+  const today = new Date().toLocaleDateString("ja-JP", {
+    month: "long", day: "numeric", weekday: "long",
+  });
 
   return (
     <div>
+      {/* ヘッダー */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-4xl font-black" style={{ color: "#ef4444" }}>CrossFit 池袋</h1>
-          <p style={{ color: "#9ca3af" }} className="mt-1">こんにちは、{userName}さん！</p>
+          <p style={{ color: "#9ca3af" }} className="text-sm">{today}</p>
+          <h1 className="text-2xl font-black">
+            こんにちは、<span style={{ color: "#ef4444" }}>{userName}</span> さん！💪
+          </h1>
         </div>
-        <button onClick={logout} className="btn-secondary text-sm">
+        <button onClick={logout} className="text-sm px-3 py-1.5 rounded-lg" style={{ background: "#1a1a1a", color: "#9ca3af", border: "1px solid #2a2a2a" }}>
           ログアウト
         </button>
       </div>
 
-      {/* Today's WOD */}
-      <div className="card mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xl font-bold">今日のWOD</h2>
-          <span className="text-sm" style={{ color: "#9ca3af" }}>
-            {new Date().toLocaleDateString("ja-JP", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              weekday: "long",
-            })}
-          </span>
-        </div>
-        {loading ? (
-          <p style={{ color: "#6b7280" }}>読み込み中...</p>
-        ) : todayWod ? (
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span
-                className="text-white text-xs font-bold px-2 py-1 rounded"
-                style={{ background: "#ef4444" }}
-              >
-                {todayWod.wodType}
-              </span>
-              <h3 className="font-bold text-lg">{todayWod.title}</h3>
+      {/* 今日のWOD */}
+      <div className="mb-8 rounded-2xl overflow-hidden" style={{ background: "linear-gradient(135deg, #7f1d1d, #1a1a1a)", border: "1px solid #ef4444" }}>
+        <div className="p-5">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-bold" style={{ color: "#fca5a5" }}>🏋️ 今日のWOD</span>
+            {!loading && !todayWod && (
+              <Link href="/wod" className="text-xs px-3 py-1 rounded-full font-bold" style={{ background: "#ef4444", color: "white" }}>
+                + 登録する
+              </Link>
+            )}
+          </div>
+          {loading ? (
+            <p style={{ color: "#9ca3af" }}>読み込み中...</p>
+          ) : todayWod ? (
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xs font-bold px-2 py-0.5 rounded" style={{ background: "rgba(239,68,68,0.3)", color: "#fca5a5" }}>
+                  {todayWod.wodType}
+                </span>
+                <span className="font-black text-lg">{todayWod.title}</span>
+              </div>
+              <pre className="text-sm whitespace-pre-wrap font-sans mb-4" style={{ color: "#d1d5db" }}>
+                {todayWod.description}
+              </pre>
+              <Link href="/wod" className="inline-block text-sm font-bold px-4 py-2 rounded-lg" style={{ background: "#ef4444", color: "white" }}>
+                結果を記録する →
+              </Link>
             </div>
-            <pre className="text-sm whitespace-pre-wrap font-sans" style={{ color: "#d1d5db" }}>
-              {todayWod.description}
-            </pre>
-            <Link
-              href="/wod"
-              className="inline-block mt-3 text-sm hover:underline"
-              style={{ color: "#f87171" }}
-            >
-              結果を記録する →
-            </Link>
-          </div>
-        ) : (
-          <div>
-            <p className="mb-3" style={{ color: "#6b7280" }}>今日のWODはまだ登録されていません</p>
-            <Link href="/wod" className="btn-primary inline-block text-sm">
-              WODを登録する
-            </Link>
-          </div>
-        )}
+          ) : (
+            <p style={{ color: "#9ca3af" }}>今日のWODはまだ登録されていません</p>
+          )}
+        </div>
       </div>
 
-      {/* Quick Links Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        {[
-          { href: "/wod", icon: "🏋️", label: "WOD", desc: "今日のメニュー" },
-          { href: "/leaderboard", icon: "🏆", label: "リーダーボード", desc: "メンバーランキング" },
-          { href: "/weight", icon: "⚖️", label: "体重", desc: "体重を記録" },
-          { href: "/goals", icon: "🎯", label: "目標", desc: "目標を設定" },
-          { href: "/pr-board", icon: "💪", label: "PRボード", desc: "自己ベストを登録" },
-          { href: "/diary", icon: "📝", label: "日記", desc: "今日の感想" },
-        ].map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="card block transition-colors hover:border-red-500"
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
-            <div className="text-3xl mb-2">{item.icon}</div>
-            <div className="font-bold">{item.label}</div>
-            <div className="text-sm" style={{ color: "#9ca3af" }}>{item.desc}</div>
-          </Link>
-        ))}
+      {/* 今日の記録セクション */}
+      <h2 className="font-black text-lg mb-4">📋 今日の記録</h2>
+      <div className="grid grid-cols-2 gap-3 mb-8">
+        <Link href="/weight" className="block rounded-xl p-4 transition-all hover:scale-105" style={{ background: "#1a1a1a", border: "1px solid #2a2a2a", textDecoration: "none", color: "inherit" }}>
+          <div className="text-3xl mb-2">⚖️</div>
+          <div className="font-black">体重を記録</div>
+          <div className="text-xs mt-1" style={{ color: "#9ca3af" }}>今日の体重を入力</div>
+        </Link>
+        <Link href="/diary" className="block rounded-xl p-4 transition-all hover:scale-105" style={{ background: "#1a1a1a", border: "1px solid #2a2a2a", textDecoration: "none", color: "inherit" }}>
+          <div className="text-3xl mb-2">📝</div>
+          <div className="font-black">日記を書く</div>
+          <div className="text-xs mt-1" style={{ color: "#9ca3af" }}>今日の感想を残す</div>
+        </Link>
+        <Link href="/pr-board" className="block rounded-xl p-4 transition-all hover:scale-105" style={{ background: "#1a1a1a", border: "1px solid #2a2a2a", textDecoration: "none", color: "inherit" }}>
+          <div className="text-3xl mb-2">💪</div>
+          <div className="font-black">PRを登録</div>
+          <div className="text-xs mt-1" style={{ color: "#9ca3af" }}>自己ベストを更新</div>
+        </Link>
+        <Link href="/goals" className="block rounded-xl p-4 transition-all hover:scale-105" style={{ background: "#1a1a1a", border: "1px solid #2a2a2a", textDecoration: "none", color: "inherit" }}>
+          <div className="text-3xl mb-2">🎯</div>
+          <div className="font-black">目標を確認</div>
+          <div className="text-xs mt-1" style={{ color: "#9ca3af" }}>進捗をチェック</div>
+        </Link>
       </div>
+
+      {/* みんなの記録 */}
+      <h2 className="font-black text-lg mb-4">🏆 みんなの記録</h2>
+      <Link href="/leaderboard" className="block rounded-xl p-5 transition-all hover:scale-105" style={{ background: "#1a1a1a", border: "1px solid #2a2a2a", textDecoration: "none", color: "inherit" }}>
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="font-black text-lg">リーダーボード</div>
+            <div className="text-sm mt-1" style={{ color: "#9ca3af" }}>WODのランキングを見る</div>
+          </div>
+          <span className="text-3xl">→</span>
+        </div>
+      </Link>
     </div>
   );
 }
