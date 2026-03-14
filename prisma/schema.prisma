@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  wodResults   WodResult[]
+  weightLogs   WeightLog[]
+  goals        Goal[]
+  prs          PR[]
+  diaryEntries DiaryEntry[]
+}
+
+model WOD {
+  id          Int      @id @default(autoincrement())
+  date        DateTime @unique
+  title       String
+  description String
+  wodType     String
+  createdAt   DateTime @default(now())
+
+  results WodResult[]
+}
+
+model WodResult {
+  id        Int      @id @default(autoincrement())
+  wodId     Int
+  userId    Int
+  score     String
+  notes     String?
+  createdAt DateTime @default(now())
+
+  wod  WOD  @relation(fields: [wodId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([wodId, userId])
+}
+
+model WeightLog {
+  id     Int      @id @default(autoincrement())
+  userId Int
+  weight Float
+  date   DateTime
+  notes  String?
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Goal {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  title       String
+  description String?
+  targetDate  DateTime?
+  completed   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model PR {
+  id       Int      @id @default(autoincrement())
+  userId   Int
+  exercise String
+  value    String
+  unit     String
+  date     DateTime
+  notes    String?
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model DiaryEntry {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  date      DateTime
+  content   String
+  rating    Int
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, date])
+}
