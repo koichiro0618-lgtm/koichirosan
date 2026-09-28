@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 
 export async function GET(req: Request) {
+  const prisma = getPrisma();
   const { searchParams } = new URL(req.url);
   const userId = Number(searchParams.get("userId"));
 
@@ -13,6 +14,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  const prisma = getPrisma();
   const { userId, title, description, targetDate } = await req.json();
   const goal = await prisma.goal.create({
     data: {
@@ -26,6 +28,7 @@ export async function POST(req: Request) {
 }
 
 export async function PATCH(req: Request) {
+  const prisma = getPrisma();
   const { id, completed } = await req.json();
   const goal = await prisma.goal.update({
     where: { id },
@@ -35,6 +38,7 @@ export async function PATCH(req: Request) {
 }
 
 export async function DELETE(req: Request) {
+  const prisma = getPrisma();
   const { id } = await req.json();
   await prisma.goal.delete({ where: { id } });
   return NextResponse.json({ success: true });

@@ -49,3 +49,8 @@ prisma/*.db-journal
 dev.db
 *.db
 *.db-journal
+
+# Cloudflare / OpenNext
+.open-next
+.wrangler
+.dev.vars*
