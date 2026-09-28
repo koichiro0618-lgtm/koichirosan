@@ -34,3 +34,18 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Cloudflare への公開
+
+- 本番は Cloudflare Workers（OpenNext）＋ D1 データベース `crossfit-ikebukuro-portal` で動きます。
+- `main` または `claude/crossfit-portal-site-OhkMB` に push すると、GitHub Actions（`.github/workflows/deploy-cloudflare.yml`）が
+  データベースの更新 → ビルド → 公開 を自動で行います。
+- 必要な GitHub Secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
+- テーブル定義を変えたときは `migrations/` に `0002_xxx.sql` のように SQL を追加し、`prisma/schema.prisma` も合わせて更新します。
+
+ローカル確認:
+
+```bash
+npm run db:migrate:local   # ローカルD1にテーブル作成
+npm run preview            # Cloudflareと同じ環境で起動
+```

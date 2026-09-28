@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
+  const prisma = getPrisma();
   const { wodId, userId, score, notes } = await req.json();
   const result = await prisma.wodResult.upsert({
     where: { wodId_userId: { wodId, userId } },

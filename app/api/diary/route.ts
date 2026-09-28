@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 
 export async function GET(req: Request) {
+  const prisma = getPrisma();
   const { searchParams } = new URL(req.url);
   const userId = Number(searchParams.get("userId"));
   const date = searchParams.get("date");
@@ -27,6 +28,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  const prisma = getPrisma();
   const { userId, date, content, rating } = await req.json();
   const dateObj = new Date(date);
   dateObj.setHours(12, 0, 0, 0);

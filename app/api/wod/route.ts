@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 
 export async function GET(req: Request) {
+  const prisma = getPrisma();
   const { searchParams } = new URL(req.url);
   const date = searchParams.get("date");
 
@@ -27,6 +28,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  const prisma = getPrisma();
   const { date, title, description, wodType } = await req.json();
   const wod = await prisma.wOD.create({
     data: {
